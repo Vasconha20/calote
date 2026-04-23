@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Quadro do Caloteiro</title>
+  <title>Quadro Oficial</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,21 +19,27 @@
       font-weight: bold;
     }
 
-    .container {
-      margin-top: 20px;
+    .botoes {
+      margin-top: 10px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
     }
 
     .principal {
       width: 250px;
       border: 5px solid red;
       border-radius: 15px;
+      margin-top: 20px;
     }
 
     .secundaria {
       width: 200px;
-      margin-top: 15px;
+      margin-top: 10px;
       border-radius: 10px;
-      opacity: 0.9;
     }
 
     .info {
@@ -44,85 +51,112 @@
       color: #00ff88;
       font-weight: bold;
     }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
   </style>
 </head>
+
 <body>
 
-  <div class="topo">🚨 QUADRO DO CALOTEIRO 🚨</div>
+  <div class="topo">🚨 QUADRO OFICIAL 🚨</div>
 
-  <div class="container">
-    
-    <!-- IMAGEM PRINCIPAL -->
-    <img src="imagem1.jpeg" class="principal">
+  <div class="botoes">
+    <button onclick="mostrarKaua()">Kauã (Caloteiro)</button>
+    <button onclick="mostrarGiovanni()">Giovanni (Tímido)</button>
+  </div>
 
-    <!-- IMAGEM SECUNDÁRIA -->
-    <div>
-      <img src="imagem2.jpeg" class="secundaria">
-    </div>
+  <h2 id="nome">Kauã</h2>
 
-    <div class="info">
+  <!-- IMAGENS JPEG -->
+  <img id="imgPrincipal" src="imagem1.jpeg" class="principal">
+  <br>
+  <img id="imgSecundaria" src="imagem2.jpeg" class="secundaria">
+
+  <div class="info">
+
+    <!-- DÍVIDA -->
+    <div id="dividaBox">
       <p>💸 Dívida atual: <span id="valor" class="destaque">R$ 47,79</span></p>
       <p>⏳ Tempo devendo:</p>
       <p id="tempo" class="destaque"></p>
     </div>
 
-    <button onclick="cobrar()">Cobrar agora</button>
+    <!-- MULHER -->
+    <div id="mulherBox" style="display:none;">
+      <p>😳 Rolas Chupadas: <span class="destaque">24</span></p>
+      <p>📅 Dias sem falar com mulher: <span id="diasMulher" class="destaque">360</span></p>
+    </div>
+
   </div>
 
-  <!-- MÚSICA -->
-  <audio id="musica" autoplay loop>
+  <!-- 🎵 MÚSICA MPEG -->
+  <audio id="musica" loop>
     <source src="musica.mpeg" type="audio/mpeg">
   </audio>
 
   <script>
-    // CONFIGURAÇÕES
-    let valorInicial = 47.79;
-    let jurosPorSegundo = 0.0005; // aumenta devagar (ajusta se quiser mais zoado)
-    
-    // DATA INICIAL (12 dias atrás)
+    // ===== CONFIG =====
+    let valor = 47.79;
+    let juros = 0.0005;
+
     let inicio = new Date();
     inicio.setDate(inicio.getDate() - 12);
 
-    let valorAtual = valorInicial;
+    let segundosSemMulher = 360 * 86400;
 
-    function atualizarTempo() {
+    // ===== ATUALIZAÇÃO =====
+    function atualizar() {
       let agora = new Date();
       let diff = agora - inicio;
 
-      let dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      let horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      let minutos = Math.floor((diff / (1000 * 60)) % 60);
+      let dias = Math.floor(diff / (1000*60*60*24));
+      let horas = Math.floor((diff / (1000*60*60)) % 24);
+      let minutos = Math.floor((diff / (1000*60)) % 60);
       let segundos = Math.floor((diff / 1000) % 60);
 
       document.getElementById("tempo").innerText =
-        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
+        `${dias}d ${horas}h ${minutos}m ${segundos}s`;
 
-      // juros subindo
-      valorAtual += jurosPorSegundo;
+      // juros
+      valor += juros;
       document.getElementById("valor").innerText =
-        "R$ " + valorAtual.toFixed(2);
+        "R$ " + valor.toFixed(2);
+
+      // contador "mulher"
+      segundosSemMulher++;
+      let diasMulher = Math.floor(segundosSemMulher / 86400);
+      document.getElementById("diasMulher").innerText = diasMulher;
     }
 
-    setInterval(atualizarTempo, 1000);
+    setInterval(atualizar, 1000);
 
-    function cobrar() {
-      alert("PAGUE AGORA 😡💸");
+    // ===== TROCA =====
+    function mostrarKaua() {
+      document.getElementById("nome").innerText = "Kauã";
+
+      document.getElementById("dividaBox").style.display = "block";
+      document.getElementById("mulherBox").style.display = "none";
+
+      document.getElementById("imgPrincipal").src = "imagem1.jpeg";
+      document.getElementById("imgSecundaria").src = "imagem2.jpeg";
     }
 
-    // Forçar autoplay em alguns navegadores
-    window.onload = () => {
+    function mostrarGiovanni() {
+      document.getElementById("nome").innerText = "Giovanni";
+
+      document.getElementById("dividaBox").style.display = "none";
+      document.getElementById("mulherBox").style.display = "block";
+
+      document.getElementById("imgPrincipal").src = "imagem3.jpeg";
+      document.getElementById("imgSecundaria").src = "imagem4.jpeg";
+    }
+
+    // ===== MÚSICA (CLIQUE OBRIGATÓRIO) =====
+    document.addEventListener("click", () => {
       let audio = document.getElementById("musica");
-      audio.play().catch(() => {
-        console.log("Autoplay bloqueado, precisa clicar na tela");
-      });
-    };
+      audio.play();
+    }, { once: true });
+
+    // iniciar no Kauã
+    mostrarKaua();
   </script>
 
 </body>
