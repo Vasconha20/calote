@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Quadro do Caloteiro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      text-align: center;
+    }
+
+    .topo {
+      background-color: red;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .container {
+      margin-top: 20px;
+    }
+
+    .principal {
+      width: 250px;
+      border: 5px solid red;
+      border-radius: 15px;
+    }
+
+    .secundaria {
+      width: 200px;
+      margin-top: 15px;
+      border-radius: 10px;
+      opacity: 0.9;
+    }
+
+    .info {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+
+    .destaque {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topo">🚨 QUADRO DO CALOTEIRO 🚨</div>
+
+  <div class="container">
+    
+    <!-- IMAGEM PRINCIPAL -->
+    <img src="imagem1.jpeg" class="principal">
+
+    <!-- IMAGEM SECUNDÁRIA -->
+    <div>
+      <img src="imagem2.jpeg" class="secundaria">
+    </div>
+
+    <div class="info">
+      <p>💸 Dívida atual: <span id="valor" class="destaque">R$ 47,79</span></p>
+      <p>⏳ Tempo devendo:</p>
+      <p id="tempo" class="destaque"></p>
+    </div>
+
+    <button onclick="cobrar()">Cobrar agora</button>
+  </div>
+
+  <!-- MÚSICA -->
+  <audio id="musica" autoplay loop>
+    <source src="musica.mpeg" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // CONFIGURAÇÕES
+    let valorInicial = 47.79;
+    let jurosPorSegundo = 0.0005; // aumenta devagar (ajusta se quiser mais zoado)
+    
+    // DATA INICIAL (12 dias atrás)
+    let inicio = new Date();
+    inicio.setDate(inicio.getDate() - 12);
+
+    let valorAtual = valorInicial;
+
+    function atualizarTempo() {
+      let agora = new Date();
+      let diff = agora - inicio;
+
+      let dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+      let horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      let minutos = Math.floor((diff / (1000 * 60)) % 60);
+      let segundos = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("tempo").innerText =
+        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
+
+      // juros subindo
+      valorAtual += jurosPorSegundo;
+      document.getElementById("valor").innerText =
+        "R$ " + valorAtual.toFixed(2);
+    }
+
+    setInterval(atualizarTempo, 1000);
+
+    function cobrar() {
+      alert("PAGUE AGORA 😡💸");
+    }
+
+    // Forçar autoplay em alguns navegadores
+    window.onload = () => {
+      let audio = document.getElementById("musica");
+      audio.play().catch(() => {
+        console.log("Autoplay bloqueado, precisa clicar na tela");
+      });
+    };
+  </script>
+
+</body>
+</html>
