@@ -6,40 +6,37 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background-color: #111;
       color: white;
       text-align: center;
     }
 
     .topo {
-      background-color: red;
+      background: red;
       padding: 20px;
       font-size: 28px;
       font-weight: bold;
     }
 
-    .botoes {
-      margin-top: 10px;
+    .botoes button {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
     }
 
-    button {
-      margin: 5px;
-      padding: 10px 15px;
-      cursor: pointer;
+    img {
+      margin-top: 15px;
+      border-radius: 10px;
     }
 
     .principal {
       width: 250px;
       border: 5px solid red;
-      border-radius: 15px;
-      margin-top: 20px;
     }
 
     .secundaria {
       width: 200px;
-      margin-top: 10px;
-      border-radius: 10px;
     }
 
     .info {
@@ -56,108 +53,129 @@
 
 <body>
 
-  <div class="topo">🚨 QUADRO OFICIAL 🚨</div>
+<div class="topo">🚨 QUADRO OFICIAL 🚨</div>
 
-  <div class="botoes">
-    <button onclick="mostrarKaua()">Kauã (Caloteiro)</button>
-    <button onclick="mostrarGiovanni()">Giovanni (Tímido)</button>
-  </div>
+<div class="botoes">
+  <button onclick="kaua()">Kauã</button>
+  <button onclick="giovanni()">Giovanni</button>
+  <button onclick="romulo()">Rômulo</button>
+  <button onclick="sandes()">Sandes</button>
+</div>
 
-  <h2 id="nome">Kauã</h2>
+<h2 id="nome"></h2>
 
-  <!-- IMAGENS JPEG -->
-  <img id="imgPrincipal" src="imagem1.jpeg" class="principal">
-  <br>
-  <img id="imgSecundaria" src="imagem2.jpeg" class="secundaria">
+<img id="imgPrincipal" class="principal" src="">
+<br>
+<img id="imgSecundaria" class="secundaria" src="">
 
-  <div class="info">
+<div class="info" id="info"></div>
 
-    <!-- DÍVIDA -->
-    <div id="dividaBox">
-      <p>💸 Dívida atual: <span id="valor" class="destaque">R$ 47,79</span></p>
-      <p>⏳ Tempo devendo:</p>
-      <p id="tempo" class="destaque"></p>
-    </div>
+<!-- MÚSICA -->
+<audio id="musica" loop>
+  <source src="musica.mpeg" type="audio/mpeg">
+</audio>
 
-    <!-- MULHER -->
-    <div id="mulherBox" style="display:none;">
-      <p>😳 Rolas Chupadas: <span class="destaque">24</span></p>
-      <p>📅 Dias sem falar com mulher: <span id="diasMulher" class="destaque">360</span></p>
-    </div>
+<script>
+/* ===== CONFIG ===== */
 
-  </div>
+// DATA FIXA (AJUSTADA PRA 14 DIAS)
+let inicio = new Date("2026-04-11T00:00:00");
 
-  <!-- 🎵 MÚSICA MPEG -->
-  <audio id="musica" loop>
-    <source src="musica.mpeg" type="audio/mpeg">
-  </audio>
+let valor = 47.79;
+let juros = 0.0005;
 
-  <script>
-    // ===== CONFIG =====
-    let valor = 47.79;
-    let juros = 0.0005;
+let segundosSemMulher = 360 * 86400;
 
-    let inicio = new Date();
-    inicio.setDate(inicio.getDate() - 12);
+/* ===== ATUALIZAÇÃO ===== */
 
-    let segundosSemMulher = 360 * 86400;
+function atualizar() {
+  let agora = new Date();
+  let diff = agora - inicio;
 
-    // ===== ATUALIZAÇÃO =====
-    function atualizar() {
-      let agora = new Date();
-      let diff = agora - inicio;
+  let dias = Math.floor(diff / (1000*60*60*24));
+  let horas = Math.floor((diff / (1000*60*60)) % 24);
+  let minutos = Math.floor((diff / (1000*60)) % 60);
+  let segundos = Math.floor((diff / 1000) % 60);
 
-      let dias = Math.floor(diff / (1000*60*60*24));
-      let horas = Math.floor((diff / (1000*60*60)) % 24);
-      let minutos = Math.floor((diff / (1000*60)) % 60);
-      let segundos = Math.floor((diff / 1000) % 60);
+  // atualizar dívida (se estiver no Kauã)
+  if (document.getElementById("tempo")) {
+    document.getElementById("tempo").innerText =
+      `${dias}d ${horas}h ${minutos}m ${segundos}s`;
 
-      document.getElementById("tempo").innerText =
-        `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+    valor += juros;
+    document.getElementById("valor").innerText =
+      "R$ " + valor.toFixed(2);
+  }
 
-      // juros
-      valor += juros;
-      document.getElementById("valor").innerText =
-        "R$ " + valor.toFixed(2);
+  // Giovanni
+  if (document.getElementById("diasMulher")) {
+    segundosSemMulher++;
+    let diasMulher = Math.floor(segundosSemMulher / 86400);
+    document.getElementById("diasMulher").innerText = diasMulher;
+  }
+}
 
-      // contador "mulher"
-      segundosSemMulher++;
-      let diasMulher = Math.floor(segundosSemMulher / 86400);
-      document.getElementById("diasMulher").innerText = diasMulher;
-    }
+setInterval(atualizar, 1000);
 
-    setInterval(atualizar, 1000);
+/* ===== TROCAS ===== */
 
-    // ===== TROCA =====
-    function mostrarKaua() {
-      document.getElementById("nome").innerText = "Kauã";
+function kaua() {
+  document.getElementById("nome").innerText = "Kauã";
 
-      document.getElementById("dividaBox").style.display = "block";
-      document.getElementById("mulherBox").style.display = "none";
+  document.getElementById("imgPrincipal").src = "imagem1.jpeg";
+  document.getElementById("imgSecundaria").src = "imagem2.jpeg";
 
-      document.getElementById("imgPrincipal").src = "imagem1.jpeg";
-      document.getElementById("imgSecundaria").src = "imagem2.jpeg";
-    }
+  document.getElementById("info").innerHTML = `
+    <p>💸 Dívida: <span id="valor" class="destaque">R$ ${valor.toFixed(2)}</span></p>
+    <p>⏳ Tempo devendo:</p>
+    <p id="tempo" class="destaque"></p>
+  `;
+}
 
-    function mostrarGiovanni() {
-      document.getElementById("nome").innerText = "Giovanni";
+function giovanni() {
+  document.getElementById("nome").innerText = "Giovanni";
 
-      document.getElementById("dividaBox").style.display = "none";
-      document.getElementById("mulherBox").style.display = "block";
+  document.getElementById("imgPrincipal").src = "imagem3.jpeg";
+  document.getElementById("imgSecundaria").src = "imagem4.jpeg";
 
-      document.getElementById("imgPrincipal").src = "imagem3.jpeg";
-      document.getElementById("imgSecundaria").src = "imagem4.jpeg";
-    }
+  document.getElementById("info").innerHTML = `
+    <p>😳 Rolas chupadas: <span class="destaque">24</span></p>
+    <p>📅 Dias sem falar com mulher: <span id="diasMulher" class="destaque">360</span></p>
+  `;
+}
 
-    // ===== MÚSICA (CLIQUE OBRIGATÓRIO) =====
-    document.addEventListener("click", () => {
-      let audio = document.getElementById("musica");
-      audio.play();
-    }, { once: true });
+function romulo() {
+  document.getElementById("nome").innerText = "Rômulo";
 
-    // iniciar no Kauã
-    mostrarKaua();
-  </script>
+  document.getElementById("imgPrincipal").src = "imagem5.jpeg";
+  document.getElementById("imgSecundaria").src = "imagem6.jpeg";
+
+  document.getElementById("info").innerHTML = `
+    <p>🕵️ Dias desaparecido: <span class="destaque">120</span></p>
+    <p>📍 Última vez visto: saindo do cabaré</p>
+  `;
+}
+
+function sandes() {
+  document.getElementById("nome").innerText = "Sandes";
+
+  document.getElementById("imgPrincipal").src = "imagem7.jpeg";
+  document.getElementById("imgSecundaria").src = "imagem8.jpeg";
+
+  document.getElementById("info").innerHTML = `
+    <p>🌴 Dias dando o cu em Santos para não ser reconhecido: <span class="destaque">4</span></p>
+    <p>🕶️ Vezes em que deu o cu para não gastar o pau: <span class="destaque">20</span></p>
+  `;
+}
+
+/* ===== MÚSICA ===== */
+document.addEventListener("click", () => {
+  document.getElementById("musica").play();
+}, { once: true });
+
+/* iniciar */
+kaua();
+</script>
 
 </body>
 </html>
